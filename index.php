@@ -1,3 +1,34 @@
+<?php
+
+    require "dbBroker.php";
+    require "model/user.php";
+
+    session_start();
+
+    if(isset($_POST['username']) && isset($_POST['password'])){
+        $uname=$_POST['username'];
+        $upass=$_POST['password'];
+        //kreiramo korisnika
+        $korisnik = User(null,$uname,$upass);
+        //$odg = $korisnik->logInUser($uname,$upass,$conn);
+        //posto je fja static mozemo i ovako pristupiti
+        $odg = User::logInUser($uname,$upass,$conn);
+        //ako je odgovor pozitivan zelimo otici na home stranicu
+        if($odg->num_rows==1){
+            echo `<script>
+            console.log("Uspesno ste se prijavili");
+            </script>`;
+            $_SESSION['user_id']=$korisnik->id;
+            header('Location: home.php');
+            exit();
+        }
+        else{
+            echo `<script>
+            console.log("Niste se prijavili");
+            </script>`;
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
